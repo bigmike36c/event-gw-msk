@@ -38,9 +38,6 @@ aws_profile = "your-aws-profile-name"
 aws_region  = "us-west-2"
 ami_id      = "ami-0d67ba0437fec367a"  # Amazon Linux 2023 us-west-2
 
-# Network Access (OPTIONAL - Leave empty to disable SSH access)
-ssh_access_ip = "YOUR_PUBLIC_IP/32"  # Find with: curl ifconfig.me
-
 # MSK Authentication (REQUIRED - Choose secure credentials)
 msk_username = "your-username"
 msk_password = "your-secure-password"
@@ -49,12 +46,6 @@ msk_password = "your-secure-password"
 cluster_name  = "your-cluster-name"
 instance_name = "your-instance-name"
 secret_name   = "AmazonMSK_your-secret-name"
-```
-
-3. **Find your public IP:**
-
-```bash
-curl ifconfig.me
 ```
 
 ### Deploy Infrastructure
@@ -69,18 +60,33 @@ terraform apply
 
 ### Connect to EC2 Instance
 
-**Using AWS Session Manager:**
+**🚀 Automated SSH Access (Recommended):**
+
+Terraform automatically generates an SSH key pair and saves the private key locally. After deployment:
+
+1. **Get the SSH connection command:**
+
+   ```bash
+   terraform output ssh_connection_command
+   ```
+
+2. **Connect using the provided command:**
+
+   ```bash
+   ssh -i ssh_key.pem ec2-user@<EC2_PUBLIC_IP>
+   ```
+
+3. **Navigate to the deployment directory:**
+   ```bash
+   cd /home/ec2-user/event-gw-msk/knep-deployment
+   ```
+
+**Alternative: AWS Session Manager:**
 
 1. Go to AWS Console → EC2 → Instances
 2. Select your instance → Connect → Session Manager
 3. **Important:** Switch to ec2-user: `sudo su - ec2-user`
 4. Navigate to config: `cd /home/ec2-user/event-gw-msk/knep-deployment`
-
-**Using SSH (if key pair configured):**
-
-```bash
-ssh ec2-user@<EC2_PUBLIC_IP>
-```
 
 ### Configure Your Services
 

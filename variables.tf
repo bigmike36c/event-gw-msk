@@ -16,15 +16,6 @@ variable "ami_id" {
   default     = "ami-0d67ba0437fec367a" # Amazon Linux 2023 us-west-2
 }
 
-variable "ssh_access_ip" {
-  description = "Your public IP address for SSH access (CIDR format, e.g., 203.0.113.1/32). Leave empty to disable SSH access."
-  type        = string
-  default     = ""
-  validation {
-    condition     = var.ssh_access_ip == "" || can(cidrhost(var.ssh_access_ip, 0))
-    error_message = "ssh_access_ip must be empty or a valid CIDR block."
-  }
-}
 
 variable "msk_username" {
   description = "Username for MSK SCRAM authentication"

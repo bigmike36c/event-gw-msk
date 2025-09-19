@@ -4,6 +4,14 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.0"
+    }
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.0"
+    }
   }
   required_version = ">= 1.4.0"
 }
@@ -83,26 +91,12 @@ resource "aws_route_table_association" "public_3" {
 resource "aws_security_group" "ec2_sg" {
   vpc_id = aws_vpc.main.id
 
-  # Allow SSH from your IP (only if ssh_access_ip is provided)
-  dynamic "ingress" {
-    for_each = var.ssh_access_ip != "" ? [1] : []
-    content {
-      from_port   = 22
-      to_port     = 22
-      protocol    = "tcp"
-      cidr_blocks = [var.ssh_access_ip]
-    }
-  }
-
-  # Allow EC2 Instance Connect (AWS IP ranges)
+  # Allow SSH from anywhere (now that we have proper key-based auth)
   ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
-    cidr_blocks = [
-      "3.5.140.0/22", # EC2 Instance Connect
-      "18.236.0.0/15" # EC2 Instance Connect
-    ]
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -141,6 +135,26 @@ resource "aws_security_group" "msk_sg" {
 }
 
 # ------------------------
+# SSH Key Pair
+# ------------------------
+resource "tls_private_key" "ssh_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "ssh_key" {
+  key_name   = "${var.instance_name}-ssh-key"
+  public_key = tls_private_key.ssh_key.public_key_openssh
+}
+
+# Save the private key to a local file
+resource "local_file" "ssh_private_key" {
+  content         = tls_private_key.ssh_key.private_key_pem
+  filename        = "ssh_key.pem"
+  file_permission = "0600"
+}
+
+# ------------------------
 # EC2 instance
 # ------------------------
 resource "aws_instance" "ec2" {
@@ -148,6 +162,7 @@ resource "aws_instance" "ec2" {
   instance_type          = "t3.medium"
   subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]
+  key_name               = aws_key_pair.ssh_key.key_name
 
   associate_public_ip_address = true
 
