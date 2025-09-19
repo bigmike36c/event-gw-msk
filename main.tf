@@ -196,15 +196,17 @@ resource "aws_instance" "ec2" {
     git clone --no-checkout https://github.com/bigmike36c/event-gw-msk.git /home/ec2-user/event-gw-msk
     cd /home/ec2-user/event-gw-msk
     
-    # Enable sparse checkout and set specific directory
-    git sparse-checkout init --cone
-    git sparse-checkout set knep-deployment/
+    # Enable sparse checkout (non-cone mode for precise control)
+    git sparse-checkout init --no-cone
     
-    # Checkout only the specified directory 
+    # Set pattern to ONLY include knep-deployment directory
+    echo "knep-deployment/*" > .git/info/sparse-checkout
+    
+    # Checkout only the specified directory
     git checkout
     
     # Change ownership
-    chown -R ec2-user:ec2-user /home/ec2-user/knep-config
+    chown -R ec2-user:ec2-user /home/ec2-user/event-gw-msk
   EOF
 
   tags = {
@@ -264,8 +266,9 @@ resource "aws_kms_alias" "msk_scram" {
 # SCRAM Secret/User
 # ------------------------
 resource "aws_secretsmanager_secret" "scram" {
-  name       = var.secret_name
-  kms_key_id = aws_kms_key.msk_scram.arn
+  name                    = var.secret_name
+  kms_key_id              = aws_kms_key.msk_scram.arn
+  recovery_window_in_days = 0 # Immediate deletion to prevent naming conflicts
 }
 
 resource "aws_secretsmanager_secret_version" "scram_version" {
