@@ -1,0 +1,18 @@
+# Copy this file to terraform.tfvars and update with your values
+
+# AWS Configuration
+aws_profile = "your-aws-profile-name"
+aws_region  = "us-west-2"
+ami_id      = "ami-0d67ba0437fec367a"  # Amazon Linux 2023 us-west-2
+
+# Network Access (OPTIONAL - Leave empty to disable SSH access)
+ssh_access_ip = "YOUR_PUBLIC_IP/32"  # Find with: curl ifconfig.me
+
+# MSK Authentication (REQUIRED - Choose secure credentials)
+msk_username = "your-username"
+msk_password = "your-secure-password"
+
+# Resource Names
+cluster_name  = "your-cluster-name"
+instance_name = "your-instance-name"
+secret_name   = "AmazonMSK_your-secret-name"
