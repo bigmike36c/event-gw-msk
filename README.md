@@ -130,6 +130,18 @@ docker-compose ps
 terraform destroy
 ```
 
+## Troubleshooting
+
+### AWS Credentials Error
+
+If you see `No valid credential sources found` or `refresh cached SSO token failed`:
+
+```bash
+aws sso login --profile your-aws-profile-name
+```
+
+Replace `your-aws-profile-name` with your actual AWS profile name from `terraform.tfvars`.
+
 ## Important Notes
 
 - **Session Manager:** Always run `sudo su - ec2-user` to access the correct user environment
