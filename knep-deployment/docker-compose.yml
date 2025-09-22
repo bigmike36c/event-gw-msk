@@ -1,6 +1,6 @@
 services:
   knep:
-    image: kong/kong-native-event-proxy-dev:main
+    image: kong/kong-native-event-proxy-dev@sha256:11b35b6c40ab093dd13196e408b8fdf10b595df2924f8fe39a232955e8ae25b9
     container_name: knep
     ports:
       - "8080:8080"

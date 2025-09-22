@@ -125,6 +125,20 @@ docker-compose up -d
 docker-compose ps
 ```
 
+#### KNEP Image Version
+
+The KNEP (Kong Native Event Proxy) image is **locked to a specific digest** (`sha256:11b35b6c40ab093dd13196e408b8fdf10b595df2924f8fe39a232955e8ae25b9`) to ensure:
+
+- ✅ **Long-term compatibility** - Prevents unexpected breaking changes
+- ✅ **Reproducible deployments** - Same image version across all environments
+- ✅ **Stable testing** - Consistent behavior for development and testing
+
+**To update the image version:**
+
+1. Edit `knep-deployment/docker-compose.yml`
+2. Replace the `@sha256:...` digest with a newer version
+3. Test thoroughly before deploying to production environments
+
 ### Konnect's KNEP Config
 
 - **MSK Endpoints:** Available in Terraform outputs (`terraform output msk_broker_endpoints`)
