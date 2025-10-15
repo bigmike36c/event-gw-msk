@@ -274,8 +274,16 @@ resource "aws_secretsmanager_secret" "scram" {
 resource "aws_secretsmanager_secret_version" "scram_version" {
   secret_id = aws_secretsmanager_secret.scram.id
   secret_string = jsonencode({
-    username = var.msk_username
-    password = var.msk_password
+    users = [
+      {
+        username = var.msk_username1
+        password = var.msk_password1
+      },
+      {
+        username = var.msk_username2
+        password = var.msk_password2
+      }
+    ]
   })
 }
 

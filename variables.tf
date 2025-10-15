@@ -17,13 +17,26 @@ variable "ami_id" {
 }
 
 
-variable "msk_username" {
+variable "msk_username1" {
   description = "Username for MSK SCRAM authentication"
   type        = string
-  default     = "testuser"
+  default     = "testuser1"
 }
 
-variable "msk_password" {
+variable "msk_password1" {
+  description = "Password for MSK SCRAM authentication"
+  type        = string
+  sensitive   = true
+  # No default - this must be provided for security
+}
+
+variable "msk_username2" {
+  description = "Username for MSK SCRAM authentication"
+  type        = string
+  default     = "testuser2"
+}
+
+variable "msk_password2" {
   description = "Password for MSK SCRAM authentication"
   type        = string
   sensitive   = true
