@@ -25,10 +25,7 @@ output "msk_broker_endpoints" {
 }
 
 output "scram_credentials" {
-  description = "SCRAM username/password (from Secrets Manager)"
-  value = {
-    username = jsondecode(aws_secretsmanager_secret_version.scram_version.secret_string)["username"]
-    password = jsondecode(aws_secretsmanager_secret_version.scram_version.secret_string)["password"]
-  }
-  sensitive = true
+  description = "SCRAM users (from Secrets Manager)"
+  value       = jsondecode(aws_secretsmanager_secret_version.scram_version.secret_string)["users"]
+  sensitive   = true
 }

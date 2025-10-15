@@ -20,7 +20,7 @@ variable "ami_id" {
 variable "msk_username1" {
   description = "Username for MSK SCRAM authentication"
   type        = string
-  default     = "testuser1"
+  default     = "user1"
 }
 
 variable "msk_password1" {
@@ -33,7 +33,7 @@ variable "msk_password1" {
 variable "msk_username2" {
   description = "Username for MSK SCRAM authentication"
   type        = string
-  default     = "testuser2"
+  default     = "user2"
 }
 
 variable "msk_password2" {
